@@ -6,7 +6,7 @@ interface
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
   Dialogs, DB, ADODB, ComCtrls, TabNotBk, ExtCtrls, DBCtrls, Grids, DBGrids,
-  StdCtrls, SearchForm;
+  StdCtrls, SearchForm, RpRave, RpDefine, RpCon, RpConDS;
 
 type
   TForm1 = class(TForm)
@@ -62,6 +62,16 @@ type
     Btn_CountSotr: TButton;
     Btn_ListFirm: TButton;
     Btn_CalcBySotr: TButton;
+    rvds_2: TRvDataSetConnection;
+    RvProject1: TRvProject;
+    q_report: TADOQuery;
+    Btn_reports: TButton;
+    rvds_1: TRvDataSetConnection;
+    Button3: TButton;
+    Button4: TButton;
+    GroupBox2: TGroupBox;
+    rvds_3: TRvDataSetConnection;
+    q_report2: TADOQuery;
     procedure DBGrid2DrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure DBGrid2ColExit(Sender: TObject);
@@ -80,6 +90,9 @@ type
     procedure Btn_CountSotrClick(Sender: TObject);
     procedure Btn_ListFirmClick(Sender: TObject);
     procedure Btn_CalcBySotrClick(Sender: TObject);
+    procedure Btn_reportsClick(Sender: TObject);
+    procedure Button4Click(Sender: TObject);
+    procedure Button3Click(Sender: TObject);
   private
     { Private declarations }
   public
@@ -106,6 +119,13 @@ begin
   TabbedNotebook1.PageIndex:=2;
   for i:=0 to DBGrid5.Columns.Count-1 do
     DBGrid5.Columns.Items[i].Width:=150;
+end;
+
+procedure TForm1.Btn_reportsClick(Sender: TObject);
+begin
+  RvProject1.Close;
+  RvProject1.SelectReport('Zakazchiki', false);
+  RvProject1.Execute;
 end;
 
 procedure TForm1.Btn_SotrByDogNOClick(Sender: TObject);
@@ -160,6 +180,26 @@ begin
   TabbedNotebook2.PageIndex:=3;
 end;
 
+procedure TForm1.Button3Click(Sender: TObject);
+begin
+  RvProject1.Close;
+  RvProject1.SelectReport('Group', false);
+  RvProject1.Execute;
+end;
+
+procedure TForm1.Button4Click(Sender: TObject);
+begin
+  RvProject1.Close;
+  q_report.Active:=false;
+  rvds_2.DataSet:=q_report;
+  q_report.SQL.Text:='SELECT prod.[no] AS `№ договора`, prod.date AS `Дата`, Personal.FIO AS `Сотрудник`, '+
+    'Zakazchik.firm_name AS `Заказчик`, prod.kol AS `Количество`, prod.stoim AS `Стоимость` '+
+    'FROM Zakazchik INNER JOIN (Personal INNER JOIN prod ON Personal.ID = prod.sotr) ON Zakazchik.ID = prod.zakazch;';
+  q_report.Active:=true;
+  RvProject1.SelectReport('Prodazhi', false);
+  RvProject1.Execute;
+end;
+
 procedure TForm1.Btn_ListByDogClick(Sender: TObject);
 var
   i: integer;
@@ -196,7 +236,7 @@ begin
   q_q.Active:=false;
   q_q.SQL.Text:='SELECT Personal.FIO AS ФИО, Personal.Adres AS Адрес, '+
     'Personal.Tel AS Телефон, dolzhn.name AS Должность, '+
-    'Sum([prod].[kol]*[prod].[stoim]) AS Сумма продаж '+
+    'Sum([prod].[kol]*[prod].[stoim]) AS `Сумма продаж` '+
     'FROM (dolzhn INNER JOIN Personal ON dolzhn.id = Personal.dolzhn) '+
     'INNER JOIN prod ON Personal.ID = prod.sotr '+
     'WHERE (Year([date])=2011) '+
@@ -255,6 +295,7 @@ begin
     cb_zak.Visible := false;
 end;
 
+// прорисовка элементов подстановки в таблицы
 procedure TForm1.DBGrid2DrawColumnCell(Sender: TObject; const Rect: TRect;
   DataCol: Integer; Column: TColumn; State: TGridDrawState);
 

@@ -19,7 +19,6 @@ object Form1: TForm1
     Width = 763
     Height = 377
     Align = alClient
-    PageIndex = 1
     TabFont.Charset = DEFAULT_CHARSET
     TabFont.Color = clBtnText
     TabFont.Height = -11
@@ -36,7 +35,7 @@ object Form1: TForm1
         Width = 755
         Height = 349
         Align = alClient
-        PageIndex = 1
+        PageIndex = 3
         TabFont.Charset = DEFAULT_CHARSET
         TabFont.Color = clBtnText
         TabFont.Height = -11
@@ -493,6 +492,41 @@ object Form1: TForm1
         TabOrder = 6
         OnClick = Btn_CalcBySotrClick
       end
+      object GroupBox2: TGroupBox
+        Left = 363
+        Top = 183
+        Width = 185
+        Height = 135
+        Caption = #1054#1090#1095#1077#1090#1099
+        TabOrder = 7
+        object Btn_reports: TButton
+          Left = 6
+          Top = 18
+          Width = 171
+          Height = 21
+          Caption = #1057#1087#1080#1089#1086#1082' '#1079#1072#1082#1072#1079#1095#1080#1082#1086#1074
+          TabOrder = 0
+          OnClick = Btn_reportsClick
+        end
+        object Button3: TButton
+          Left = 6
+          Top = 72
+          Width = 171
+          Height = 21
+          Caption = 'Button3'
+          TabOrder = 1
+          OnClick = Button3Click
+        end
+        object Button4: TButton
+          Left = 6
+          Top = 45
+          Width = 171
+          Height = 21
+          Caption = #1055#1088#1086#1076#1072#1078#1080
+          TabOrder = 2
+          OnClick = Button4Click
+        end
+      end
     end
     object TTabPage
       Left = 4
@@ -650,5 +684,53 @@ object Form1: TForm1
     Parameters = <>
     Left = 568
     Top = 152
+  end
+  object rvds_2: TRvDataSetConnection
+    RuntimeVisibility = rtDeveloper
+    DataSet = q_report
+    Left = 680
+    Top = 280
+  end
+  object RvProject1: TRvProject
+    ProjectFile = './reports.rav'
+    Left = 480
+    Top = 296
+  end
+  object q_report: TADOQuery
+    Connection = ADOConnection1
+    CursorType = ctStatic
+    Parameters = <>
+    Left = 632
+    Top = 280
+  end
+  object rvds_1: TRvDataSetConnection
+    RuntimeVisibility = rtDeveloper
+    DataSet = table_zak
+    Left = 680
+    Top = 232
+  end
+  object rvds_3: TRvDataSetConnection
+    RuntimeVisibility = rtDeveloper
+    DataSet = q_report2
+    Left = 680
+    Top = 328
+  end
+  object q_report2: TADOQuery
+    Active = True
+    Connection = ADOConnection1
+    CursorType = ctStatic
+    Parameters = <>
+    SQL.Strings = (
+      'SELECT Personal.FIO AS '#1060#1048#1054', Personal.Adres AS '#1040#1076#1088#1077#1089','
+      'Personal.Tel AS '#1058#1077#1083#1077#1092#1086#1085', dolzhn.name AS '#1044#1086#1083#1078#1085#1086#1089#1090#1100','
+      'Sum([prod].[kol]*[prod].[stoim]) AS `'#1057#1091#1084#1084#1072' '#1087#1088#1086#1076#1072#1078'`'
+      'FROM (dolzhn INNER JOIN Personal ON dolzhn.id = Personal.dolzhn)'
+      'INNER JOIN prod ON Personal.ID = prod.sotr'
+      'WHERE (Year([date])=2011)'
+      
+        'GROUP BY Personal.FIO, Personal.Adres, Personal.Tel, dolzhn.name' +
+        ';')
+    Left = 632
+    Top = 328
   end
 end
