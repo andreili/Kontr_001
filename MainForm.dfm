@@ -19,6 +19,7 @@ object Form1: TForm1
     Width = 763
     Height = 377
     Align = alClient
+    PageIndex = 1
     TabFont.Charset = DEFAULT_CHARSET
     TabFont.Color = clBtnText
     TabFont.Height = -11
@@ -35,7 +36,7 @@ object Form1: TForm1
         Width = 755
         Height = 349
         Align = alClient
-        PageIndex = 3
+        PageIndex = 1
         TabFont.Charset = DEFAULT_CHARSET
         TabFont.Color = clBtnText
         TabFont.Height = -11
@@ -46,6 +47,12 @@ object Form1: TForm1
           Left = 4
           Top = 24
           Caption = #1044#1086#1083#1078#1085#1086#1089#1090#1080
+          object TLabel
+            Left = 48
+            Top = 72
+            Width = 3
+            Height = 13
+          end
           object DBGrid1: TDBGrid
             Left = 0
             Top = 0
@@ -63,8 +70,13 @@ object Form1: TForm1
             Columns = <
               item
                 Expanded = False
+                FieldName = 'id'
+                Visible = True
+              end
+              item
+                Expanded = False
                 FieldName = 'name'
-                Title.Caption = #1053#1072#1079#1074#1072#1085#1080#1077
+                Width = 300
                 Visible = True
               end>
           end
@@ -323,23 +335,182 @@ object Form1: TForm1
       Left = 4
       Top = 24
       Caption = #1047#1072#1087#1088#1086#1089#1099
-      object Button1: TButton
-        Left = 32
-        Top = 16
-        Width = 177
-        Height = 25
-        Caption = #1055#1086#1080#1089#1082' '#1080' '#1092#1080#1083#1100#1090#1088#1072#1094#1080#1103' '#1076#1072#1085#1085#1099#1093
+      object Panel1: TPanel
+        Left = 0
+        Top = 0
+        Width = 755
+        Height = 73
+        Align = alTop
+        BevelOuter = bvNone
         TabOrder = 0
-        OnClick = Button1Click
+        object Button1: TButton
+          Left = 4
+          Top = 6
+          Width = 177
+          Height = 25
+          Caption = #1055#1086#1080#1089#1082' '#1080' '#1092#1080#1083#1100#1090#1088#1072#1094#1080#1103' '#1076#1072#1085#1085#1099#1093
+          TabOrder = 0
+          OnClick = Button1Click
+        end
+        object Button2: TButton
+          Left = 4
+          Top = 37
+          Width = 177
+          Height = 25
+          Caption = #1057#1086#1088#1090#1080#1088#1086#1074#1082#1072' '#1087#1086' 2-'#1084' '#1087#1086#1083#1103#1084
+          TabOrder = 1
+          OnClick = Button2Click
+        end
       end
-      object Button2: TButton
-        Left = 32
-        Top = 47
-        Width = 177
-        Height = 25
-        Caption = #1057#1086#1088#1090#1080#1088#1086#1074#1082#1072' '#1087#1086' 2-'#1084' '#1087#1086#1083#1103#1084
+      object GroupBox1: TGroupBox
+        Left = 4
+        Top = 68
+        Width = 549
+        Height = 109
+        Caption = #1044#1080#1085#1072#1084#1080#1095#1077#1089#1082#1080#1077' '#1079#1072#1087#1088#1086#1089#1099
         TabOrder = 1
-        OnClick = Button2Click
+        object Label1: TLabel
+          Left = 11
+          Top = 24
+          Width = 86
+          Height = 13
+          Caption = #1053#1086#1084#1077#1088' '#1076#1086#1075#1086#1074#1086#1088#1072':'
+        end
+        object Label2: TLabel
+          Left = 11
+          Top = 51
+          Width = 82
+          Height = 13
+          Caption = #1053#1072#1080#1084#1077#1085'. '#1092#1080#1088#1084#1099':'
+        end
+        object Label3: TLabel
+          Left = 11
+          Top = 78
+          Width = 82
+          Height = 13
+          Caption = #1053#1072#1080#1084#1077#1085'. '#1092#1080#1088#1084#1099':'
+        end
+        object CB_SotrByDogNO: TDBComboBox
+          Left = 103
+          Top = 21
+          Width = 145
+          Height = 21
+          DataField = 'no'
+          DataSource = ds_prod
+          ReadOnly = True
+          TabOrder = 0
+        end
+        object Btn_SotrByDogNO: TButton
+          Left = 254
+          Top = 21
+          Width = 284
+          Height = 21
+          Caption = #1048#1085#1092#1086#1088#1084#1072#1094#1080#1103' '#1086' '#1089#1086#1090#1088#1091#1076#1085#1080#1082#1077', '#1079#1072#1082#1083#1102#1095#1080#1074#1096#1077#1084' '#1076#1086#1075#1086#1074#1086#1088
+          TabOrder = 1
+          OnClick = Btn_SotrByDogNOClick
+        end
+        object Btn_SotrByFirmName: TButton
+          Left = 254
+          Top = 48
+          Width = 284
+          Height = 21
+          Caption = #1048#1085#1092#1086#1088#1084#1072#1094#1080#1103' '#1086' '#1089#1086#1090#1088#1091#1076#1085#1080#1082#1072#1093', '#1079#1072#1082#1083#1102#1095#1080#1074#1096#1080#1093' '#1076#1086#1075#1086#1074#1086#1088#1072
+          TabOrder = 2
+          OnClick = Btn_SotrByFirmNameClick
+        end
+        object CB_SotrByFirmName: TDBComboBox
+          Left = 103
+          Top = 48
+          Width = 145
+          Height = 21
+          DataField = 'firm_name'
+          DataSource = ds_zak
+          ReadOnly = True
+          TabOrder = 3
+        end
+        object CB_ProdByFirmName: TDBComboBox
+          Left = 103
+          Top = 75
+          Width = 145
+          Height = 21
+          DataField = 'firm_name'
+          DataSource = ds_zak
+          ReadOnly = True
+          TabOrder = 4
+        end
+        object Btn_ProdByFirmName: TButton
+          Left = 254
+          Top = 75
+          Width = 284
+          Height = 21
+          Caption = #1048#1085#1092#1086#1088#1084#1072#1094#1080#1103' '#1086' '#1082#1091#1087#1083#1077#1085#1085#1086#1081' '#1101#1083#1077#1082#1090#1088#1086#1101#1085#1077#1088#1075#1080#1080
+          TabOrder = 5
+          OnClick = Btn_ProdByFirmNameClick
+        end
+      end
+      object Btn_ListByDog: TButton
+        Left = 4
+        Top = 210
+        Width = 353
+        Height = 21
+        Caption = #1057#1087#1080#1089#1086#1082' '#1089#1086#1090#1088#1091#1076#1085#1080#1082#1086#1074' '#1089' '#1091#1082#1072#1079#1072#1085#1080#1077#1084' '#1079#1072#1082#1083#1102#1095#1077#1085#1085#1099#1093' '#1076#1086#1075#1086#1074#1086#1088#1086#1074
+        TabOrder = 2
+        OnClick = Btn_ListByDogClick
+      end
+      object Btn_ListByDate: TButton
+        Left = 4
+        Top = 237
+        Width = 353
+        Height = 21
+        Caption = #1057#1087#1080#1089#1086#1082' '#1089#1086#1090#1088#1091#1076#1085#1080#1082#1086#1074', '#1091' '#1082#1086#1090#1086#1088#1099#1093' '#1085#1077' '#1091#1082#1072#1079#1072#1085' '#1075#1086#1076' '#1088#1086#1078#1076#1077#1085#1080#1103
+        TabOrder = 3
+        OnClick = Btn_ListByDateClick
+      end
+      object Btn_CountSotr: TButton
+        Left = 4
+        Top = 183
+        Width = 353
+        Height = 21
+        Caption = #1050#1086#1083#1080#1095#1077#1089#1090#1074#1086' '#1089#1086#1090#1088#1091#1076#1085#1080#1082#1086#1074', '#1079#1072#1082#1083#1102#1095#1080#1074#1096#1080#1093' '#1076#1086#1075#1086#1074#1086#1088#1099' '#1074' '#1101#1090#1086#1084' '#1075#1086#1076#1091
+        TabOrder = 4
+        OnClick = Btn_CountSotrClick
+      end
+      object Btn_ListFirm: TButton
+        Left = 4
+        Top = 264
+        Width = 353
+        Height = 21
+        Caption = #1057#1087#1080#1089#1086#1082' '#1092#1080#1088#1084', '#1079#1072#1082#1083#1102#1095#1072#1074#1096#1080#1093' '#1076#1086#1075#1086#1074#1086#1088#1099' '#1074' '#1086#1082#1090#1103#1073#1088#1077' 2011 '#1086#1076#1072
+        TabOrder = 5
+        OnClick = Btn_ListFirmClick
+      end
+      object Btn_CalcBySotr: TButton
+        Left = 4
+        Top = 291
+        Width = 353
+        Height = 21
+        Caption = #1050#1072#1083#1100#1082#1091#1083#1103#1094#1080#1103' '#1089#1090#1086#1080#1084#1086#1089#1090#1080' '#1079#1072#1082#1072#1079#1086#1074' '#1079#1072' 2011 '#1075#1086#1076' '#1087#1086' '#1089#1086#1090#1088#1091#1076#1085#1080#1082#1072#1084
+        TabOrder = 6
+        OnClick = Btn_CalcBySotrClick
+      end
+    end
+    object TTabPage
+      Left = 4
+      Top = 24
+      Caption = #1056#1077#1079#1091#1083#1100#1090#1072#1090#1099' '#1079#1072#1087#1088#1086#1089#1086#1074
+      object DBGrid5: TDBGrid
+        Left = 0
+        Top = 0
+        Width = 755
+        Height = 349
+        Align = alClient
+        DataSource = DS_q
+        TabOrder = 0
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -11
+        TitleFont.Name = 'Tahoma'
+        TitleFont.Style = []
       end
     end
   end
@@ -358,44 +529,44 @@ object Form1: TForm1
     LoginPrompt = False
     Mode = cmShareDenyNone
     Provider = 'Microsoft.Jet.OLEDB.4.0'
-    Left = 408
-    Top = 152
+    Left = 440
+    Top = 64
   end
   object table_dolzhn: TADOTable
     Active = True
     Connection = ADOConnection1
     CursorType = ctStatic
     TableName = 'dolzhn'
-    Left = 56
-    Top = 112
+    Left = 504
+    Top = 40
   end
   object ds_dolzhn: TDataSource
     DataSet = table_dolzhn
-    Left = 56
-    Top = 160
+    Left = 504
+    Top = 88
   end
   object ds_sotr: TDataSource
     DataSet = table_sotr
-    Left = 120
-    Top = 160
+    Left = 568
+    Top = 88
   end
   object ds_zak: TDataSource
     DataSet = table_zak
-    Left = 184
-    Top = 160
+    Left = 632
+    Top = 88
   end
   object ds_prod: TDataSource
     DataSet = table_prod
-    Left = 240
-    Top = 160
+    Left = 688
+    Top = 88
   end
   object table_sotr: TADOTable
     Active = True
     Connection = ADOConnection1
     CursorType = ctStatic
     TableName = 'Personal'
-    Left = 120
-    Top = 112
+    Left = 568
+    Top = 40
     object table_sotrID: TAutoIncField
       FieldName = 'ID'
       ReadOnly = True
@@ -412,7 +583,7 @@ object Form1: TForm1
       FieldName = 'Tel'
       Size = 255
     end
-    object table_sotrYoB: TIntegerField
+    object table_sotrYoB: TDateTimeField
       FieldName = 'YoB'
     end
     object table_sotrdolzhn: TIntegerField
@@ -429,8 +600,8 @@ object Form1: TForm1
     Connection = ADOConnection1
     CursorType = ctStatic
     TableName = 'Zakazchik'
-    Left = 184
-    Top = 112
+    Left = 632
+    Top = 40
   end
   object table_prod: TADOTable
     Active = True
@@ -438,8 +609,8 @@ object Form1: TForm1
     CursorType = ctStatic
     OnCalcFields = table_prodCalcFields
     TableName = 'prod'
-    Left = 240
-    Top = 112
+    Left = 688
+    Top = 40
     object table_prodno: TAutoIncField
       FieldName = 'no'
       ReadOnly = True
@@ -468,5 +639,16 @@ object Form1: TForm1
       FieldName = 'summa'
       Calculated = True
     end
+  end
+  object DS_q: TDataSource
+    DataSet = q_q
+    Left = 608
+    Top = 152
+  end
+  object q_q: TADOQuery
+    Connection = ADOConnection1
+    Parameters = <>
+    Left = 568
+    Top = 152
   end
 end

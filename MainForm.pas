@@ -29,7 +29,6 @@ type
     table_sotrFIO: TWideStringField;
     table_sotrAdres: TWideStringField;
     table_sotrTel: TWideStringField;
-    table_sotrYoB: TIntegerField;
     table_prodno: TAutoIncField;
     table_proddate: TDateTimeField;
     table_prodsotr: TIntegerField;
@@ -43,6 +42,26 @@ type
     table_prodsumma: TFloatField;
     Button1: TButton;
     Button2: TButton;
+    Panel1: TPanel;
+    DBGrid5: TDBGrid;
+    GroupBox1: TGroupBox;
+    CB_SotrByDogNO: TDBComboBox;
+    Label1: TLabel;
+    Btn_SotrByDogNO: TButton;
+    Btn_SotrByFirmName: TButton;
+    CB_SotrByFirmName: TDBComboBox;
+    Label2: TLabel;
+    Label3: TLabel;
+    CB_ProdByFirmName: TDBComboBox;
+    Btn_ProdByFirmName: TButton;
+    DS_q: TDataSource;
+    q_q: TADOQuery;
+    Btn_ListByDog: TButton;
+    table_sotrYoB: TDateTimeField;
+    Btn_ListByDate: TButton;
+    Btn_CountSotr: TButton;
+    Btn_ListFirm: TButton;
+    Btn_CalcBySotr: TButton;
     procedure DBGrid2DrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure DBGrid2ColExit(Sender: TObject);
@@ -53,6 +72,14 @@ type
     procedure DBGrid3TitleClick(Column: TColumn);
     procedure DBGrid4TitleClick(Column: TColumn);
     procedure Button2Click(Sender: TObject);
+    procedure Btn_SotrByDogNOClick(Sender: TObject);
+    procedure Btn_SotrByFirmNameClick(Sender: TObject);
+    procedure Btn_ProdByFirmNameClick(Sender: TObject);
+    procedure Btn_ListByDogClick(Sender: TObject);
+    procedure Btn_ListByDateClick(Sender: TObject);
+    procedure Btn_CountSotrClick(Sender: TObject);
+    procedure Btn_ListFirmClick(Sender: TObject);
+    procedure Btn_CalcBySotrClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -66,6 +93,50 @@ var
 implementation
 
 {$R *.dfm}
+
+procedure TForm1.Btn_ProdByFirmNameClick(Sender: TObject);
+var
+  i: integer;
+begin
+  q_q.Active:=false;
+  q_q.SQL.Text:='SELECT prod.date AS `Дата договора`, prod.kol AS `Количество`, prod.stoim AS `Стоимость за единицу` '+
+    'FROM Zakazchik INNER JOIN prod ON Zakazchik.ID = prod.zakazch '+
+    'WHERE (Zakazchik.firm_name="' + CB_ProdByFirmName.Text + '")';
+  q_q.Active:=true;
+  TabbedNotebook1.PageIndex:=2;
+  for i:=0 to DBGrid5.Columns.Count-1 do
+    DBGrid5.Columns.Items[i].Width:=150;
+end;
+
+procedure TForm1.Btn_SotrByDogNOClick(Sender: TObject);
+var
+  i: integer;
+begin
+  q_q.Active:=false;
+  q_q.SQL.Text:='SELECT Personal.FIO AS `ФИО`, Personal.Adres AS `Адрес`, Personal.Tel AS `Телефон`, '+
+    'Personal.YoB AS `Год рождения`, dolzhn.name AS `Должность` '+
+    'FROM dolzhn INNER JOIN (Personal INNER JOIN prod ON Personal.ID = prod.sotr) ON dolzhn.id = Personal.dolzhn '+
+    'WHERE (prod.[no]=' + CB_SotrByDogNO.Text + ')';
+  q_q.Active:=true;
+  TabbedNotebook1.PageIndex:=2;
+  for i:=0 to DBGrid5.Columns.Count-1 do
+    DBGrid5.Columns.Items[i].Width:=100;
+end;
+
+procedure TForm1.Btn_SotrByFirmNameClick(Sender: TObject);
+var
+  i: integer;
+begin
+  q_q.Active:=false;
+  q_q.SQL.Text:='SELECT Personal.FIO AS `ФИО`, Personal.Adres AS `Адрес`, Personal.Tel AS `Телефон`, '+
+    'dolzhn.name AS `Должность` FROM Zakazchik INNER JOIN ((dolzhn INNER JOIN Personal ON '+
+    'dolzhn.id = Personal.dolzhn) INNER JOIN prod ON Personal.ID = prod.sotr) ON Zakazchik.ID = prod.zakazch '+
+    'WHERE (Zakazchik.firm_name="' + CB_SotrByFirmName.Text + '")';
+  q_q.Active:=true;
+  TabbedNotebook1.PageIndex:=2;
+  for i:=0 to DBGrid5.Columns.Count-1 do
+    DBGrid5.Columns.Items[i].Width:=100;
+end;
 
 procedure TForm1.Button1Click(Sender: TObject);
 begin
@@ -83,10 +154,86 @@ begin
   // создание   основного  индекса  во   время   работы  программы ,
   //  желательно ,  чтобы   индекс   состоял  из двух  или  более полей
   //  ( Номер  чека  в моем примере ).
-  table_prod.MasterFields
+  //Table_prod.MasterFields
   table_prod.IndexFieldNames:='date;sotr';
   TabbedNotebook1.PageIndex:=0;
   TabbedNotebook2.PageIndex:=3;
+end;
+
+procedure TForm1.Btn_ListByDogClick(Sender: TObject);
+var
+  i: integer;
+begin
+  q_q.Active:=false;
+  q_q.SQL.Text:='SELECT Personal.FIO AS ФИО, Zakazchik.firm_name AS [Название фирмы] '+
+    'FROM Personal INNER JOIN (Zakazchik INNER JOIN prod ON Zakazchik.ID = prod.zakazch) ON Personal.ID = prod.sotr '+
+    'GROUP BY Personal.FIO, Zakazchik.firm_name;';
+  q_q.Active:=true;
+  TabbedNotebook1.PageIndex:=2;
+  for i:=0 to DBGrid5.Columns.Count-1 do
+    DBGrid5.Columns.Items[i].Width:=100;
+end;
+
+procedure TForm1.Btn_ListFirmClick(Sender: TObject);
+var
+  i: integer;
+begin
+  q_q.Active:=false;
+  q_q.SQL.Text:='SELECT Zakazchik.firm_name AS `Название`, Zakazchik.adres AS `Адрес`, '+
+    'Zakazchik.tel AS `Телефон`, Zakazchik.rekv AS `Реквизиты` '+
+    'FROM Zakazchik INNER JOIN prod ON Zakazchik.ID = prod.zakazch '+
+    'WHERE ((Year([date])=2011) AND (Month([date])=10));';
+  q_q.Active:=true;
+  TabbedNotebook1.PageIndex:=2;
+  for i:=0 to DBGrid5.Columns.Count-1 do
+    DBGrid5.Columns.Items[i].Width:=100;
+end;
+
+procedure TForm1.Btn_CalcBySotrClick(Sender: TObject);
+var
+  i: integer;
+begin
+  q_q.Active:=false;
+  q_q.SQL.Text:='SELECT Personal.FIO AS ФИО, Personal.Adres AS Адрес, '+
+    'Personal.Tel AS Телефон, dolzhn.name AS Должность, '+
+    'Sum([prod].[kol]*[prod].[stoim]) AS Сумма продаж '+
+    'FROM (dolzhn INNER JOIN Personal ON dolzhn.id = Personal.dolzhn) '+
+    'INNER JOIN prod ON Personal.ID = prod.sotr '+
+    'WHERE (Year([date])=2011) '+
+    'GROUP BY Personal.FIO, Personal.Adres, Personal.Tel, dolzhn.name;';
+  q_q.Active:=true;
+  TabbedNotebook1.PageIndex:=2;
+  for i:=0 to DBGrid5.Columns.Count-1 do
+    DBGrid5.Columns.Items[i].Width:=100;
+end;
+
+procedure TForm1.Btn_CountSotrClick(Sender: TObject);
+var
+  i: integer;
+begin
+  q_q.Active:=false;
+  q_q.SQL.Text:='SELECT Count(Personal.ID) AS [Количество] '+
+    'FROM Personal INNER JOIN prod ON Personal.ID = prod.sotr '+
+    'HAVING (Year([prod.date])=Year(Now()));';
+  q_q.Active:=true;
+  TabbedNotebook1.PageIndex:=2;
+  for i:=0 to DBGrid5.Columns.Count-1 do
+    DBGrid5.Columns.Items[i].Width:=100;
+end;
+
+procedure TForm1.Btn_ListByDateClick(Sender: TObject);
+var
+  i: integer;
+begin
+  q_q.Active:=false;
+  q_q.SQL.Text:='SELECT Personal.FIO AS `ФИО`, Personal.Adres AS `Адрес`, Personal.Tel AS `Телефон`, '+
+    'Personal.YoB AS `Год рождения`, dolzhn.name AS `Должность` '+
+    'FROM dolzhn INNER JOIN Personal ON dolzhn.id = Personal.dolzhn '+
+    'WHERE (Personal.YoB Is Null)';
+  q_q.Active:=true;
+  TabbedNotebook1.PageIndex:=2;
+  for i:=0 to DBGrid5.Columns.Count-1 do
+    DBGrid5.Columns.Items[i].Width:=100;
 end;
 
 procedure TForm1.DBGrid1TitleClick(Column: TColumn);
